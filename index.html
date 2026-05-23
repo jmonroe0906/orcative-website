@@ -17,8 +17,8 @@
     --orca-border: #e0e0e0;
   }
   body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--orca-text); background: #fff; }
-  nav { background: var(--orca-dark); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 80px; position: sticky; top: 0; z-index: 100; }
-  .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; overflow: hidden; max-height: 64px; }
+  nav { background: var(--orca-dark); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
   .nav-wordmark { font-size: 20px; font-weight: 700; letter-spacing: 0.05em; color: #fff; }
   .nav-wordmark span { color: var(--orca-teal); }
   .nav-links { display: flex; align-items: center; gap: 1.5rem; }
@@ -182,7 +182,24 @@
 
 <nav>
   <div class="nav-logo" onclick="showPage('home')">
-    <img src="ORCATIVE FINAL JPEG.jpg" alt="Orcative" style="height:52px; width:auto; max-height:52px; display:block;">
+    <!-- REPLACE THE SVG BELOW WITH YOUR ACTUAL LOGO: <img src="ORCATIVE_FINAL_JPEG.jpg" alt="Orcative" style="height:36px;"> -->
+    <svg height="32" viewBox="0 0 36 36" fill="none">
+      <ellipse cx="18" cy="18" rx="16" ry="16" fill="#1A1A1A"/>
+      <path d="M8 22 C8 14, 14 8, 22 10 C28 12, 30 18, 26 24 C22 30, 12 30, 8 22Z" fill="#2a2a2a"/>
+      <path d="M10 20 C12 14, 18 10, 24 13 C28 15, 28 22, 24 26" stroke="#3ECFCF" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <circle cx="24" cy="13" r="2" fill="#3ECFCF"/>
+      <circle cx="13" cy="25" r="1.5" fill="#3ECFCF" opacity="0.5"/>
+      <circle cx="11" cy="23" r="1" fill="#3ECFCF" opacity="0.3"/>
+    </svg>
+    <div class="nav-wordmark">ORC<span>A</span>T<span>I</span>VE</div>
+  </div>
+  <div class="nav-links">
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('about')">About</a>
+    <a onclick="showPage('products')">Products</a>
+    <a onclick="showPage('blog')">Blog</a>
+    <a onclick="showPage('contact')">Contact</a>
+    <button class="btn-demo" onclick="showPage('contact')">Request Demo</button>
   </div>
 </nav>
 
