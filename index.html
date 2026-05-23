@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orcative — Cognitive Orchestration</title>
+<meta name="description" content="Orcative designs and deploys AI-native platforms that improve access to care, reduce cost and waste, and recover revenue across the healthcare ecosystem.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --orca-dark: #1A1A1A;
+    --orca-teal: #3ECFCF;
+    --orca-teal-dark: #2aabab;
+    --orca-gray: #F5F5F5;
+    --orca-text: #333333;
+    --orca-muted: #777777;
+    --orca-border: #e0e0e0;
+  }
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: var(--orca-text); background: #fff; }
+  nav { background: var(--orca-dark); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .nav-wordmark { font-size: 20px; font-weight: 700; letter-spacing: 0.05em; color: #fff; }
+  .nav-wordmark span { color: var(--orca-teal); }
+  .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+  .nav-links a { color: #ccc; text-decoration: none; font-size: 14px; cursor: pointer; transition: color 0.2s; }
+  .nav-links a:hover { color: #fff; }
+  .btn-demo { background: var(--orca-teal); color: var(--orca-dark); border: none; padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .btn-demo:hover { background: var(--orca-teal-dark); }
+  .page { display: none; }
+  .page.active { display: block; }
+  .hero { background: var(--orca-dark); padding: 5rem 2rem 4rem; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(62,207,207,0.08) 0%, transparent 70%); }
+  .hero-tag { display: inline-block; background: rgba(62,207,207,0.15); color: var(--orca-teal); font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 1.5rem; }
+  .hero h1 { font-size: 46px; font-weight: 700; color: #fff; line-height: 1.2; max-width: 720px; margin: 0 auto 1.25rem; }
+  .hero h1 span { color: var(--orca-teal); }
+  .hero p { font-size: 17px; color: #aaa; max-width: 560px; margin: 0 auto 2rem; line-height: 1.7; }
+  .hero-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: var(--orca-teal); color: var(--orca-dark); border: none; padding: 12px 24px; border-radius: 6px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+  .btn-primary:hover { background: var(--orca-teal-dark); }
+  .btn-outline { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 12px 24px; border-radius: 6px; font-size: 15px; cursor: pointer; }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.6); }
+  .section { padding: 4rem 2rem; }
+  .section-light { background: var(--orca-gray); }
+  .section-dark { background: var(--orca-dark); }
+  .section-center { text-align: center; }
+  .container { max-width: 900px; margin: 0 auto; }
+  .section-label { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--orca-teal); margin-bottom: 0.75rem; }
+  .section h2 { font-size: 28px; font-weight: 700; margin-bottom: 1rem; line-height: 1.3; }
+  .section-dark h2 { color: #fff; }
+  .section p.lead { font-size: 16px; color: var(--orca-muted); line-height: 1.7; max-width: 620px; }
+  .section-center .lead { margin: 0 auto; }
+  .pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; margin-top: 2.5rem; }
+  .pillar { background: #fff; border: 1px solid var(--orca-border); border-radius: 10px; padding: 1.5rem; text-align: center; }
+  .pillar-icon { width: 44px; height: 44px; background: rgba(62,207,207,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+  .pillar-icon svg { width: 22px; height: 22px; stroke: var(--orca-teal); fill: none; stroke-width: 2; }
+  .pillar h3 { font-size: 14px; font-weight: 600; margin-bottom: 0.4rem; }
+  .pillar p { font-size: 13px; color: var(--orca-muted); line-height: 1.5; }
+  .pathwell-feature { background: var(--orca-dark); border-radius: 12px; padding: 2.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; margin-top: 2rem; }
+  .pathwell-badge { display: inline-block; background: rgba(62,207,207,0.15); color: var(--orca-teal); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; margin-bottom: 1rem; }
+  .pathwell-feature h3 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 0.75rem; line-height: 1.3; }
+  .pathwell-feature .sub { font-size: 15px; color: #aaa; line-height: 1.7; margin-bottom: 1rem; }
+  .pathwell-feature .advocate { font-size: 14px; color: rgba(62,207,207,0.9); line-height: 1.6; margin-bottom: 1.5rem; font-style: italic; border-left: 2px solid var(--orca-teal); padding-left: 12px; }
+  .pathwell-visual { background: rgba(62,207,207,0.06); border: 1px solid rgba(62,207,207,0.2); border-radius: 10px; padding: 1.5rem; }
+  .pw-visual-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orca-teal); margin-bottom: 1rem; }
+  .pw-step { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .pw-step:last-child { border-bottom: none; }
+  .pw-num { width: 26px; height: 26px; background: var(--orca-teal); color: var(--orca-dark); border-radius: 50%; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .pw-step-text { font-size: 13px; color: #ccc; line-height: 1.5; }
+  .pw-step-text strong { color: #fff; display: block; margin-bottom: 2px; }
+  .pw-savings { background: rgba(62,207,207,0.1); border: 1px solid rgba(62,207,207,0.25); border-radius: 8px; padding: 1rem 1.25rem; margin-top: 1rem; display: flex; align-items: center; gap: 12px; }
+  .pw-savings-icon { font-size: 20px; }
+  .pw-savings-text { font-size: 13px; color: #ccc; line-height: 1.5; }
+  .pw-savings-text strong { color: var(--orca-teal); display: block; font-size: 14px; margin-bottom: 2px; }
+  .trust-section { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  .trust-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; }
+  .stat-box { background: rgba(62,207,207,0.08); border: 1px solid rgba(62,207,207,0.2); border-radius: 8px; padding: 1.25rem; }
+  .stat-box .num { font-size: 28px; font-weight: 700; color: var(--orca-teal); }
+  .stat-box .label { font-size: 12px; color: #aaa; margin-top: 2px; line-height: 1.4; }
+  .cs-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 1.5rem; margin-bottom: 1rem; }
+  .cs-card:last-child { margin-bottom: 0; }
+  .cs-tag { display: inline-block; background: rgba(62,207,207,0.12); color: var(--orca-teal); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 0.75rem; }
+  .cs-card h4 { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 0.5rem; }
+  .cs-card p { font-size: 13px; color: #888; line-height: 1.6; }
+  .audience-bar { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--orca-dark); }
+  .aud-col { padding: 2rem; border-right: 1px solid rgba(255,255,255,0.08); cursor: pointer; transition: background 0.2s; }
+  .aud-col:last-child { border-right: none; }
+  .aud-col:hover { background: rgba(62,207,207,0.05); }
+  .aud-col .aud-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orca-teal); margin-bottom: 0.5rem; }
+  .aud-col h4 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 0.4rem; }
+  .aud-col p { font-size: 13px; color: #888; line-height: 1.5; }
+  .aud-link { font-size: 13px; color: var(--orca-teal); margin-top: 0.75rem; display: block; }
+  .about-hero { background: var(--orca-dark); padding: 4rem 2rem; text-align: center; }
+  .about-hero h1 { font-size: 36px; font-weight: 700; color: #fff; margin-bottom: 0.75rem; }
+  .about-hero p { font-size: 17px; color: #aaa; max-width: 560px; margin: 0 auto; line-height: 1.7; }
+  .mission-block { background: rgba(62,207,207,0.06); border-left: 3px solid var(--orca-teal); border-radius: 0 8px 8px 0; padding: 1.75rem 2rem; margin-top: 1.5rem; }
+  .mission-block p { font-size: 17px; color: var(--orca-text); line-height: 1.8; font-style: italic; }
+  .founder-block { display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: start; padding: 2.5rem; background: #fff; border: 1px solid var(--orca-border); border-radius: 12px; margin-top: 2rem; }
+  .founder-avatar { width: 80px; height: 80px; background: rgba(62,207,207,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; color: var(--orca-teal); flex-shrink: 0; }
+  .founder-block h3 { font-size: 20px; font-weight: 700; margin-bottom: 0.25rem; }
+  .founder-block .title { font-size: 13px; color: var(--orca-teal); font-weight: 600; margin-bottom: 0.75rem; }
+  .founder-block p { font-size: 14px; color: var(--orca-muted); line-height: 1.7; }
+  .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+  .value-card { background: var(--orca-dark); border-radius: 10px; padding: 1.75rem; }
+  .value-card .v-num { font-size: 11px; font-weight: 700; color: var(--orca-teal); letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+  .value-card h4 { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 0.6rem; }
+  .value-card p { font-size: 13px; color: #999; line-height: 1.6; }
+  .orca-philosophy { background: var(--orca-dark); border-radius: 12px; padding: 2.5rem; display: grid; grid-template-columns: auto 1fr; gap: 2rem; align-items: center; margin-top: 2rem; }
+  .orca-icon-wrap { width: 80px; height: 80px; background: rgba(62,207,207,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .orca-philosophy h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 0.75rem; }
+  .orca-philosophy p { font-size: 14px; color: #aaa; line-height: 1.7; }
+  .products-hero { background: var(--orca-dark); padding: 4rem 2rem; text-align: center; }
+  .products-hero h1 { font-size: 36px; font-weight: 700; color: #fff; margin-bottom: 0.75rem; }
+  .products-hero p { font-size: 17px; color: #aaa; max-width: 560px; margin: 0 auto; }
+  .product-section { padding: 4rem 2rem; }
+  .product-section:nth-child(even) { background: var(--orca-gray); }
+  .product-tag { display: inline-block; background: rgba(62,207,207,0.12); color: var(--orca-teal); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; margin-bottom: 0.75rem; }
+  .product-header h2 { font-size: 28px; font-weight: 700; margin-bottom: 0.75rem; }
+  .product-header p { font-size: 16px; color: var(--orca-muted); line-height: 1.7; max-width: 640px; }
+  .product-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start; margin-top: 2rem; }
+  .vp-list { list-style: none; }
+  .vp-list li { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--orca-border); font-size: 14px; line-height: 1.5; }
+  .vp-list li:last-child { border-bottom: none; }
+  .vp-check { color: var(--orca-teal); font-weight: 700; flex-shrink: 0; }
+  .hiw-steps { display: flex; flex-direction: column; }
+  .hiw-step { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--orca-border); }
+  .hiw-step:last-child { border-bottom: none; }
+  .hiw-num { width: 28px; height: 28px; border-radius: 50%; background: var(--orca-dark); color: var(--orca-teal); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .hiw-step h5 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .hiw-step p { font-size: 13px; color: var(--orca-muted); line-height: 1.5; }
+  .mini-product { background: #fff; border: 1px solid var(--orca-border); border-radius: 10px; padding: 1.75rem; margin-bottom: 1.5rem; }
+  .mini-product:last-child { margin-bottom: 0; }
+  .mp-tag { display: inline-block; background: rgba(62,207,207,0.1); color: var(--orca-teal); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; margin-bottom: 0.75rem; }
+  .mini-product h3 { font-size: 18px; font-weight: 700; margin-bottom: 0.5rem; }
+  .mini-product p { font-size: 14px; color: var(--orca-muted); line-height: 1.7; }
+  .blog-hero { background: var(--orca-dark); padding: 4rem 2rem; text-align: center; }
+  .blog-hero h1 { font-size: 36px; font-weight: 700; color: #fff; margin-bottom: 0.75rem; }
+  .blog-hero p { font-size: 17px; color: #aaa; max-width: 520px; margin: 0 auto; }
+  .blog-cats { display: flex; gap: 8px; flex-wrap: wrap; padding: 1.5rem 2rem; border-bottom: 1px solid var(--orca-border); background: #fff; }
+  .cat-btn { padding: 6px 14px; border-radius: 20px; font-size: 13px; border: 1px solid var(--orca-border); cursor: pointer; background: #fff; color: var(--orca-muted); transition: all 0.2s; }
+  .cat-btn.active { background: var(--orca-dark); color: #fff; border-color: var(--orca-dark); }
+  .blog-grid-wrap { padding: 2rem; max-width: 900px; margin: 0 auto; }
+  .blog-featured { background: var(--orca-dark); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: start; }
+  .bf-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orca-teal); margin-bottom: 0.5rem; }
+  .blog-featured h2 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 0.75rem; line-height: 1.3; }
+  .blog-featured p { font-size: 14px; color: #999; line-height: 1.7; margin-bottom: 1rem; }
+  .blog-meta { font-size: 12px; color: #666; }
+  .blog-meta span { color: var(--orca-teal); }
+  .bf-read { background: var(--orca-teal); color: var(--orca-dark); border: none; padding: 10px 20px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
+  .blog-card { background: #fff; border: 1px solid var(--orca-border); border-radius: 10px; padding: 1.5rem; cursor: pointer; transition: border-color 0.2s; }
+  .blog-card:hover { border-color: var(--orca-teal); }
+  .bc-cat { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--orca-teal); margin-bottom: 0.5rem; }
+  .blog-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 0.5rem; line-height: 1.4; }
+  .blog-card p { font-size: 13px; color: var(--orca-muted); line-height: 1.6; margin-bottom: 1rem; }
+  .bc-meta { font-size: 12px; color: #aaa; }
+  .contact-hero { background: var(--orca-dark); padding: 4rem 2rem; text-align: center; }
+  .contact-hero h1 { font-size: 36px; font-weight: 700; color: #fff; margin-bottom: 0.75rem; }
+  .contact-hero p { font-size: 17px; color: #aaa; max-width: 520px; margin: 0 auto; }
+  .contact-layout { display: grid; grid-template-columns: 1fr 1.5fr; gap: 3rem; max-width: 900px; margin: 0 auto; padding: 3rem 2rem; }
+  .contact-info h3 { font-size: 18px; font-weight: 700; margin-bottom: 1rem; }
+  .contact-info p { font-size: 14px; color: var(--orca-muted); line-height: 1.7; margin-bottom: 1.5rem; }
+  .contact-detail { display: flex; gap: 10px; align-items: center; margin-bottom: 0.75rem; font-size: 14px; }
+  .cd-icon { color: var(--orca-teal); }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 0.4rem; }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--orca-border); border-radius: 6px; font-size: 14px; font-family: inherit; color: var(--orca-text); background: #fff; transition: border-color 0.2s; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--orca-teal); }
+  .form-group textarea { height: 100px; resize: vertical; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  footer { background: var(--orca-dark); padding: 2.5rem 2rem; display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center; }
+  .footer-brand .fw { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: 0.05em; }
+  .footer-brand .fw span { color: var(--orca-teal); }
+  .footer-brand .ft { font-size: 11px; letter-spacing: 0.15em; color: var(--orca-teal); text-transform: uppercase; margin-top: 2px; }
+  .footer-brand p { font-size: 13px; color: #666; margin-top: 0.75rem; }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { font-size: 13px; color: #888; text-decoration: none; cursor: pointer; }
+  .footer-links a:hover { color: #fff; }
+  .footer-copy { font-size: 12px; color: #555; margin-top: 0.75rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <img src="ORCATIVE_FINAL_JPEG.jpg" alt="Orcative" style="height:36px;">
+    <svg height="32" viewBox="0 0 36 36" fill="none">
+      <ellipse cx="18" cy="18" rx="16" ry="16" fill="#1A1A1A"/>
+      <path d="M8 22 C8 14, 14 8, 22 10 C28 12, 30 18, 26 24 C22 30, 12 30, 8 22Z" fill="#2a2a2a"/>
+      <path d="M10 20 C12 14, 18 10, 24 13 C28 15, 28 22, 24 26" stroke="#3ECFCF" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <circle cx="24" cy="13" r="2" fill="#3ECFCF"/>
+      <circle cx="13" cy="25" r="1.5" fill="#3ECFCF" opacity="0.5"/>
+      <circle cx="11" cy="23" r="1" fill="#3ECFCF" opacity="0.3"/>
+    </svg>
+    <div class="nav-wordmark">ORC<span>A</span>T<span>I</span>VE</div>
+  </div>
+  <div class="nav-links">
+    <a onclick="showPage('home')">Home</a>
+    <a onclick="showPage('about')">About</a>
+    <a onclick="showPage('products')">Products</a>
+    <a onclick="showPage('blog')">Blog</a>
+    <a onclick="showPage('contact')">Contact</a>
+    <button class="btn-demo" onclick="showPage('contact')">Request Demo</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-tag">Cognitive Orchestration</div>
+    <h1>Healthcare runs better when <span>intelligence orchestrates.</span></h1>
+    <p>Orcative designs and deploys AI-native platforms that improve access to care, reduce cost and waste, and recover revenue that should never have been lost. Conceived by a 25-year healthcare expert who lived these problems firsthand.</p>
+    <div class="hero-ctas">
+      <button class="btn-primary" onclick="showPage('products')">Explore Our Platforms</button>
+      <button class="btn-outline" onclick="showPage('contact')">Request a Demo</button>
+    </div>
+  </div>
+  <div class="section section-light section-center">
+    <div class="container">
+      <div class="section-label">What We Do</div>
+      <h2>Orchestrating intelligence across the healthcare ecosystem</h2>
+      <p class="lead">Every Orcative platform is AI-native and purpose-built to solve a structural problem in healthcare. Not a workaround, not a retrofit.</p>
+      <div class="pillars">
+        <div class="pillar">
+          <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M12 21C16.97 21 21 16.97 21 12C21 7.03 16.97 3 12 3C7.03 3 3 7.03 3 12C3 16.97 7.03 21 12 21Z"/><path d="M12 8V12L14 14"/></svg></div>
+          <h3>Improve Access to Care</h3>
+          <p>Guide patients to the right care at the right time before costly missteps become emergencies.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7L12 12L22 7L12 2Z"/><path d="M2 17L12 22L22 17"/><path d="M2 12L12 17L22 12"/></svg></div>
+          <h3>Reduce Cost & Waste</h3>
+          <p>Eliminate unnecessary utilization and administrative friction from the system.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 12h6M9 15h4"/></svg></div>
+          <h3>Automate Operations</h3>
+          <p>Replace manual workflows with AI-driven automation that scales without added headcount.</p>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon"><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <h3>Recover Lost Revenue</h3>
+          <p>Identify payer underpayments and billing errors with precision AI analysis.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="container">
+      <div class="section-label">Featured Platform</div>
+      <h2>Introducing Orcative Pathwell</h2>
+      <div class="pathwell-feature">
+        <div>
+          <div class="pathwell-badge">Care Navigation · AI Concierge</div>
+          <h3>Proactive care guidance for complex patients before it turns emergent.</h3>
+          <p class="sub">Pathwell is a care navigation platform designed for self-funded health plans, TPAs, and regional health plans. Purpose-built for members with complex medical histories, it guides them to the right path of care, connecting them with rated specialists, facilitating appointments, and providing personalized advocacy every step of the way.</p>
+          <p class="advocate">Pathwell empowers members and plan employees to become true healthcare advocates, equipped with the right information at the right moment to make confident care decisions.</p>
+          <button class="btn-primary" onclick="showPage('products')">Learn More</button>
+        </div>
+        <div>
+          <div class="pathwell-visual">
+            <div class="pw-visual-label">How Pathwell works</div>
+            <div class="pw-step"><div class="pw-num">1</div><div class="pw-step-text"><strong>Personalized care pathway</strong>Pathwell identifies the right path of care for each member's unique situation. No generic guidance.</div></div>
+            <div class="pw-step"><div class="pw-num">2</div><div class="pw-step-text"><strong>Rated specialists & providers</strong>Members are matched with in-network, rated specialists suited to their condition and coverage.</div></div>
+            <div class="pw-step"><div class="pw-num">3</div><div class="pw-step-text"><strong>Appointment connection</strong>Pathwell connects members directly, removing the friction between guidance and action.</div></div>
+            <div class="pw-step"><div class="pw-num">4</div><div class="pw-step-text"><strong>Appointment advocacy</strong>Members receive preparation guidance so they walk in informed and empowered, not overwhelmed.</div></div>
+            <div class="pw-step"><div class="pw-num">5</div><div class="pw-step-text"><strong>Follow-up & continued guidance</strong>After care is received, Pathwell stays engaged, supporting next steps and ongoing navigation.</div></div>
+          </div>
+          <div class="pw-savings">
+            <div class="pw-savings-icon">📉</div>
+            <div class="pw-savings-text"><strong>Measurable plan savings</strong>Fewer unnecessary claims, avoided ER visits, and reduced out-of-pocket surprises for members and plans alike.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section section-dark">
+    <div class="container">
+      <div class="trust-section">
+        <div>
+          <div class="section-label">Why Orcative</div>
+          <h2>Built by someone who has spent 25 years inside healthcare's hardest financial problems.</h2>
+          <p style="color:#aaa; line-height:1.7; margin-top:0.75rem; font-size:15px;">Orcative's founder brings 25+ years of direct experience solving problems across healthcare revenue cycle management, healthcare finance, and the patient financial experience. He has worked and partnered with hospitals, health systems, medical groups, and EHR platforms. This isn't a pivot from tech into healthcare. It's a career spent inside healthcare's most complex operational and financial challenges, now channeled into AI-native platforms designed and deployed to finally fix them.</p>
+          <div class="trust-stats">
+            <div class="stat-box"><div class="num">25+</div><div class="label">Years solving healthcare's hardest financial problems</div></div>
+            <div class="stat-box"><div class="num">3</div><div class="label">AI platforms designed and in deployment</div></div>
+            <div class="stat-box"><div class="num">AI-native</div><div class="label">Designed in from day one, not bolted on after</div></div>
+            <div class="stat-box"><div class="num">Operator</div><div class="label">Conceived by someone who lived these problems, not observed them</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label" style="margin-bottom:1rem">Expanding Platform Suite</div>
+          <div class="cs-card">
+            <div class="cs-tag">Coming Soon</div>
+            <h4>Hospital Vendor Management Platform</h4>
+            <p>An AI-native platform designed to help hospitals and health systems actively manage vendor performance within complex healthcare environments, improving accountability, contract adherence, and operational outcomes.</p>
+          </div>
+          <div class="cs-card">
+            <div class="cs-tag">Coming Soon</div>
+            <h4>NSA Revenue Recovery Tool</h4>
+            <p>An intelligent revenue recovery platform designed to identify payer underpayments and No Surprises Act violations, recovering revenue that should never have been lost.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="audience-bar">
+    <div class="aud-col">
+      <div class="aud-label">Health Plans & Brokers</div>
+      <h4>Reduce claims cost. Improve member outcomes.</h4>
+      <p>Pathwell is purpose-built for self-funded plan economics. See how we deliver measurable ROI for employers, TPAs, and the brokers who serve them.</p>
+      <span class="aud-link" onclick="showPage('products')" style="cursor:pointer">Explore Pathwell</span>
+    </div>
+    <div class="aud-col">
+      <div class="aud-label">Investors</div>
+      <h4>A large problem. A proven operator. An AI-native approach.</h4>
+      <p>Healthcare is a $4.5T industry carrying decades of fragmented, siloed technology decisions. We are changing that with an end-to-end intelligence approach.</p>
+      <span class="aud-link" onclick="showPage('contact')" style="cursor:pointer">Connect with us</span>
+    </div>
+    <div class="aud-col">
+      <div class="aud-label">Builders & Developers</div>
+      <h4>Ambitious problems. Real-world healthcare domain depth.</h4>
+      <p>If you are motivated by designing AI systems that have tangible impact in healthcare, we want to hear from you.</p>
+      <span class="aud-link" onclick="showPage('contact')" style="cursor:pointer">Get in touch</span>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">
+      <div class="fw">ORC<span>A</span>T<span>I</span>VE</div>
+      <div class="ft">cognitive orchestration</div>
+      <p>AI-native healthcare platforms designed and deployed by a 25-year healthcare expert.</p>
+      <div class="footer-copy">© 2025 Orcative LLC. All rights reserved.</div>
+    </div>
+    <div class="footer-links">
+      <a onclick="showPage('home')">Home</a>
+      <a onclick="showPage('about')">About</a>
+      <a onclick="showPage('products')">Products</a>
+      <a onclick="showPage('blog')">Blog</a>
+      <a onclick="showPage('contact')">Contact</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ABOUT -->
+<div id="page-about" class="page">
+  <div class="about-hero">
+    <div class="section-label">About Orcative</div>
+    <h1>Intelligence designed into everything.</h1>
+    <p>Orcative was founded on one belief: the problems in healthcare aren't a mystery. They're a failure of orchestration. We're here to fix that.</p>
+  </div>
+  <div class="section">
+    <div class="container">
+      <div class="section-label">Our Mission</div>
+      <h2>What drives every platform we design and deploy.</h2>
+      <div class="mission-block">
+        <p>To orchestrate intelligence across the healthcare ecosystem, improving access to care, reducing cost and waste, automating operations, and recovering revenue, so that patients, plans, and providers can all operate the way they should.</p>
+      </div>
+      <div style="margin-top:3rem">
+        <div class="section-label">Our Founder</div>
+        <div class="founder-block">
+          <div class="founder-avatar">JM</div>
+          <div>
+            <h3>James Monroe</h3>
+            <div class="title">Co-Founder & President, Orcative LLC</div>
+            <p>With more than 25 years of experience solving problems across healthcare revenue cycle management, healthcare finance, and the patient financial experience, James has worked and partnered with hospitals, health systems, medical groups, and EHR platforms. He has spent his career at the intersection of clinical operations and financial performance, close enough to understand exactly where the system breaks down and why most solutions fail to address it at the root. Orcative is his answer: AI-native platforms designed and deployed from the problem-solver's perspective, not the consultant's.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section section-light">
+    <div class="container">
+      <div class="section-label">The Orca Philosophy</div>
+      <div class="orca-philosophy">
+        <div class="orca-icon-wrap">
+          <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+            <path d="M10 30 C10 18, 18 10, 28 14 C36 17, 38 26, 32 34 C26 42, 12 40, 10 30Z" fill="rgba(62,207,207,0.15)"/>
+            <path d="M12 28 C14 20, 20 14, 28 17 C34 19, 35 27, 30 33" stroke="#3ECFCF" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <circle cx="28" cy="17" r="3" fill="#3ECFCF"/>
+          </svg>
+        </div>
+        <div>
+          <h3>Why an orca?</h3>
+          <p>Orcas are the most cognitively sophisticated predators in the ocean. They are highly social, deeply strategic, and remarkably adaptive. They don't react to their environment; they anticipate it. They coordinate with precision. They learn. They teach. Their intelligence doesn't exist in isolation. It moves, it acts, and it improves over time through the collective. That is exactly what we are designing into healthcare: intelligence that doesn't just process, but orchestrates.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="container">
+      <div class="section-label">Our Values</div>
+      <h2>What we stand for</h2>
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="v-num">01</div>
+          <h4>Access</h4>
+          <p>The right care should be reachable by every member. We remove the barriers that make it otherwise.</p>
+        </div>
+        <div class="value-card">
+          <div class="v-num">02</div>
+          <h4>Coordination</h4>
+          <p>Payers, providers, and patients aligned around the patient. We ensure care is coordinated and financial impact is understood before it begins.</p>
+        </div>
+        <div class="value-card">
+          <div class="v-num">03</div>
+          <h4>Intelligence</h4>
+          <p>AI isn't a feature. It's the foundation that makes Access and Coordination possible.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">
+      <div class="fw">ORC<span>A</span>T<span>I</span>VE</div>
+      <div class="ft">cognitive orchestration</div>
+      <p>AI-native healthcare platforms designed and deployed by a 25-year healthcare expert.</p>
+      <div class="footer-copy">© 2025 Orcative LLC. All rights reserved.</div>
+    </div>
+    <div class="footer-links">
+      <a onclick="showPage('home')">Home</a>
+      <a onclick="showPage('about')">About</a>
+      <a onclick="showPage('products')">Products</a>
+      <a onclick="showPage('blog')">Blog</a>
+      <a onclick="showPage('contact')">Contact</a>
+    </div>
+  </footer>
+</div>
+
+<!-- PRODUCTS -->
+<div id="page-products" class="page">
+  <div class="products-hero">
+    <div class="section-label">Our Platforms</div>
+    <h1>AI-native. Expert-designed. Deployed for healthcare.</h1>
+    <p>Three platforms addressing three structural problems in healthcare. Each one AI-native from the ground up.</p>
+  </div>
+  <div class="product-section">
+    <div class="container">
+      <div class="product-header">
+        <div class="product-tag">Featured Platform · Care Navigation</div>
+        <h2>Orcative Pathwell</h2>
+        <p>A care navigation platform designed for commercially insured members with complex medical histories, guiding them through the right path of care proactively, personally, and completely. Deployed for self-funded health plans, TPAs, and regional health plans.</p>
+      </div>
+      <div class="product-layout">
+        <div>
+          <h4 style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--orca-muted); margin-bottom:1rem; font-weight:600">Key Value Props</h4>
+          <ul class="vp-list">
+            <li><span class="vp-check">✓</span> Designed for complex patients who don't fit standard care pathways</li>
+            <li><span class="vp-check">✓</span> Guides members to rated, in-network specialists matched to their condition</li>
+            <li><span class="vp-check">✓</span> Connects members directly to schedule appointments, removing friction between guidance and action</li>
+            <li><span class="vp-check">✓</span> Equips members with advocacy tools before, during, and after care</li>
+            <li><span class="vp-check">✓</span> Provides follow-up guidance to support ongoing navigation</li>
+            <li><span class="vp-check">✓</span> Measurably reduces unnecessary utilization and downstream claims cost</li>
+            <li><span class="vp-check">✓</span> A genuine differentiator for benefits brokers and consultants</li>
+          </ul>
+          <div style="margin-top:1.5rem"><button class="btn-primary" onclick="showPage('contact')">Request a Demo</button></div>
+        </div>
+        <div>
+          <h4 style="font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--orca-muted); margin-bottom:1rem; font-weight:600">How it works</h4>
+          <div class="hiw-steps">
+            <div class="hiw-step"><div class="hiw-num">1</div><div><h5>Care pathway guidance</h5><p>Pathwell identifies the right path of care for each member's unique clinical situation. No generic protocols.</p></div></div>
+            <div class="hiw-step"><div class="hiw-num">2</div><div><h5>Specialist matching</h5><p>Members are matched with rated, in-network providers suited to their specific condition and plan coverage.</p></div></div>
+            <div class="hiw-step"><div class="hiw-num">3</div><div><h5>Appointment connection</h5><p>Pathwell connects members directly to schedule, removing the gap between knowing what to do and doing it.</p></div></div>
+            <div class="hiw-step"><div class="hiw-num">4</div><div><h5>Appointment advocacy</h5><p>Members receive preparation guidance so they arrive informed, equipped, and empowered to advocate for themselves.</p></div></div>
+            <div class="hiw-step"><div class="hiw-num">5</div><div><h5>Follow-up & continued navigation</h5><p>After care is received, Pathwell stays engaged, supporting next steps and keeping members on the right path.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="product-section">
+    <div class="container">
+      <div class="section-label">Expanding Platform Suite</div>
+      <h2>More platforms from Orcative</h2>
+      <p class="lead">Significant design and development work is underway on two additional platforms, each targeting a structural problem in the healthcare ecosystem.</p>
+      <div style="margin-top:2rem">
+        <div class="mini-product">
+          <div class="mp-tag">Coming Soon · Hospital Operations</div>
+          <h3>Hospital Vendor Management Platform</h3>
+          <p>An AI-native platform designed to help hospitals and health systems actively manage vendor performance within complex healthcare environments. AI-native from the ground up. Going beyond simple visibility, it gives health systems the tools to enforce contract accountability, track performance outcomes, and make data-driven vendor decisions conceived by someone who understands health system operations from the inside.</p>
+        </div>
+        <div class="mini-product">
+          <div class="mp-tag">Coming Soon · Revenue Integrity</div>
+          <h3>NSA Revenue Recovery Tool</h3>
+          <p>An intelligent revenue recovery platform designed to identify payer underpayments and No Surprises Act violations, helping health systems and medical groups recapture revenue that should never have been lost. Grounded in deep expertise in payer contracts, remittance analysis, and healthcare billing compliance.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">
+      <div class="fw">ORC<span>A</span>T<span>I</span>VE</div>
+      <div class="ft">cognitive orchestration</div>
+      <p>AI-native healthcare platforms designed and deployed by a 25-year healthcare expert.</p>
+      <div class="footer-copy">© 2025 Orcative LLC. All rights reserved.</div>
+    </div>
+    <div class="footer-links">
+      <a onclick="showPage('home')">Home</a>
+      <a onclick="showPage('about')">About</a>
+      <a onclick="showPage('products')">Products</a>
+      <a onclick="showPage('blog')">Blog</a>
+      <a onclick="showPage('contact')">Contact</a>
+    </div>
+  </footer>
+</div>
+
+<!-- BLOG -->
+<div id="page-blog" class="page">
+  <div class="blog-hero">
+    <div class="section-label">Insights</div>
+    <h1>Thinking out loud about AI and healthcare.</h1>
+    <p>Perspectives from 25+ years at the intersection of revenue cycle, finance, and the patient experience, now filtered through an AI lens.</p>
+  </div>
+  <div class="blog-cats">
+    <button class="cat-btn active">All</button>
+    <button class="cat-btn">AI in Healthcare</button>
+    <button class="cat-btn">Care Navigation</button>
+    <button class="cat-btn">Revenue Integrity</button>
+    <button class="cat-btn">Health Plan Strategy</button>
+    <button class="cat-btn">Industry Insights</button>
+  </div>
+  <div class="blog-grid-wrap">
+    <div class="blog-featured">
+      <div>
+        <div class="bf-label">Featured · AI in Healthcare</div>
+        <h2>Why Healthcare's AI Moment Is Different and Why Most Vendors Will Get It Wrong</h2>
+        <p>The healthcare industry has seen waves of technology promise — EHRs, patient portals, telehealth — each deployed in silos, disconnected from the end-to-end workflows that actually drive outcomes. AI is being evaluated the same way today, and that approach will produce the same results. Real transformation in healthcare requires intelligence designed across the full workflow, not bolted onto isolated touch points. This article makes the case for why end-to-end matters and what it will take to get it right.</p>
+        <div class="blog-meta">Coming Soon &nbsp;·&nbsp; <span>James Monroe, Orcative</span> &nbsp;·&nbsp; Est. 12 min read</div>
+      </div>
+      <button class="bf-read">Notify Me</button>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card">
+        <div class="bc-cat">Care Navigation</div>
+        <h3>The Stuck Complex Patient: Why Standard Care Management Fails the Members Who Need It Most</h3>
+        <p>Commercially insured members with complex histories are falling through the cracks of every care management model. Here's what's actually happening and how AI changes it.</p>
+        <div class="bc-meta">Coming Soon · 9 min read</div>
+      </div>
+      <div class="blog-card">
+        <div class="bc-cat">Health Plan Strategy</div>
+        <h3>What Self-Funded Employers Really Need from Their Benefits Stack in 2026</h3>
+        <p>Plan sponsors are under pressure from every direction. This is an operator's view of what's broken and what actually moves the needle on cost, outcomes, and member experience.</p>
+        <div class="bc-meta">Coming Soon · 7 min read</div>
+      </div>
+      <div class="blog-card">
+        <div class="bc-cat">Revenue Integrity</div>
+        <h3>The No Surprises Act: What Providers Are Still Missing Four Years In</h3>
+        <p>NSA compliance isn't just a billing checklist. It's a revenue recovery opportunity most health systems are missing, and the gap is wider than most realize.</p>
+        <div class="bc-meta">Coming Soon · 10 min read</div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">
+      <div class="fw">ORC<span>A</span>T<span>I</span>VE</div>
+      <div class="ft">cognitive orchestration</div>
+      <p>AI-native healthcare platforms designed and deployed by a 25-year healthcare expert.</p>
+      <div class="footer-copy">© 2025 Orcative LLC. All rights reserved.</div>
+    </div>
+    <div class="footer-links">
+      <a onclick="showPage('home')">Home</a>
+      <a onclick="showPage('about')">About</a>
+      <a onclick="showPage('products')">Products</a>
+      <a onclick="showPage('blog')">Blog</a>
+      <a onclick="showPage('contact')">Contact</a>
+    </div>
+  </footer>
+</div>
+
+<!-- CONTACT -->
+<div id="page-contact" class="page">
+  <div class="contact-hero">
+    <div class="section-label">Get in Touch</div>
+    <h1>Let's talk about what's possible.</h1>
+    <p>Whether you're a health plan buyer, a broker evaluating platforms, an investor, or a builder, we'd like to hear from you.</p>
+  </div>
+  <div class="contact-layout">
+    <div class="contact-info">
+      <h3>Connect with Orcative</h3>
+      <p>This isn't a sales form. It's an invitation to have a real conversation about the problems we're solving and whether there's a fit.</p>
+      <div class="contact-detail"><span class="cd-icon">✉</span><span>hello@orcative.com</span></div>
+      <div class="contact-detail"><span class="cd-icon">📍</span><span>Stow, Ohio</span></div>
+      <div style="margin-top:1.5rem">
+        <div style="font-size:13px; font-weight:600; margin-bottom:0.4rem">Follow our work</div>
+        <!-- REPLACE BELOW WITH ACTUAL LINKEDIN URL WHEN READY -->
+        <div style="font-size:13px; color:#666;">LinkedIn <span style="color:#555; font-style:italic; font-size:12px;">(Coming Soon)</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="form-group">
+        <label>I am a...</label>
+        <select>
+          <option value="">Select one</option>
+          <option>Health Plan / TPA / Employer</option>
+          <option>Benefits Broker / Consultant</option>
+          <option>Investor</option>
+          <option>Developer / Technical Partner</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" placeholder="Jane"></div>
+        <div class="form-group"><label>Last Name</label><input type="text" placeholder="Smith"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Company</label><input type="text" placeholder="Acme Health Plan"></div>
+        <div class="form-group"><label>Title / Role</label><input type="text" placeholder="VP of Benefits"></div>
+      </div>
+      <div class="form-group"><label>Email</label><input type="email" placeholder="jane@company.com"></div>
+      <div class="form-group"><label>Message</label><textarea placeholder="Tell us what you're working on or what you'd like to explore..."></textarea></div>
+      <button class="btn-primary" style="width:100%">Send Message</button>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand">
+      <div class="fw">ORC<span>A</span>T<span>I</span>VE</div>
+      <div class="ft">cognitive orchestration</div>
+      <p>AI-native healthcare platforms designed and deployed by a 25-year healthcare expert.</p>
+      <div class="footer-copy">© 2025 Orcative LLC. All rights reserved.</div>
+    </div>
+    <div class="footer-links">
+      <a onclick="showPage('home')">Home</a>
+      <a onclick="showPage('about')">About</a>
+      <a onclick="showPage('products')">Products</a>
+      <a onclick="showPage('blog')">Blog</a>
+      <a onclick="showPage('contact')">Contact</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('.cat-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
